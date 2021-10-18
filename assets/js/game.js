@@ -7,7 +7,7 @@ var randomNumber = function(min, max) {
 var getPlayerName = function() {
     var name = "";
 
-    while (name === "" || name ===null) {
+    while (name === "" || name === null) {
         name = prompt("What is your robot's name?");
     }
 }
@@ -57,26 +57,39 @@ var enemyInfo = [
     }
 ];
 
+var fightOrSkip = function() {
+    //ask player if they'd like to fight or skip using fightOrSkip function
+    var promptFight = window.prompt('Would you like to FIGHT or SKIP this battle? Enter "FIGHT" or "SKIP" to choose.');
+    promptFight = promptFight.toLowerCase();
+
+    //recursive function
+    if (promptFight === "" || promptFight === null) {
+        window.alert("You need to provide a valid answer! Please try again");
+        return fightOrSkip();
+    }
+
+    if (promptFight === "skip") {
+        //confirm
+        var confirmSkip = window.confirm("Are you sure you'd like to quit?");
+
+        //if yes, leave fight
+        if (confirmSkip) {
+            window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
+            //subtract money for skipping
+            playerInfo.money = Math.max(0, playerInfo.money - 10);
+            
+            return true;
+        }
+    }
+}
+
 var fight = function(enemy) {
 
     // repeat and execute as long as the enemy-robot is alive
     while (enemy.health > 0 && playerInfo.health > 0) {
-        var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
-
-        // if player picks skip confirm and then stop the loop
-        if (promptFight === "skip" || promptFight === "SKIP") {
-            // confirm player wants to skip
-            var confirmSkip = window.confirm("Are you sure you'd like to quit?");
-
-            // if yes (true), leave fight
-            if (confirmSkip) {
-                window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
-                // subtract money for skipping
-                //use math.Max to keep playerInfo.money at zero or above
-                playerInfo.money = Math.max(0, playerInfo.money - 10);
-                console.log("playerInfo.money", playerInfo.money);
-                break;
-            }
+        if (fightOrSkip()) {
+            //if true, leave fight by breaking loop
+            break;
         }
 
         //Subtract the value of `playerInfo.attack` from the value of `enemy.health` and use that result to update the value in the `enemy.health` variable
